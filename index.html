@@ -123,6 +123,7 @@ new Vue({
     this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
     this.loadFromCache();
     this.fetchAll();
+    console.log(this.refreshCheck);
   },
   methods: {
     async fetchAll() {
@@ -247,9 +248,6 @@ new Vue({
     }
   },
   // END OF METHODS
-  mounted: function() {
-    console.log(this.refreshCheck);
-  },
 });
 </script>
 </body>
