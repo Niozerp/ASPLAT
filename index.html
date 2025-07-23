@@ -191,6 +191,9 @@ new Vue({
     },
     openPrompt(p) {
       this.activePrompt = p;
+      console.log(p);
+      console.log(this.filteredPrompts);
+      console.log(this.activePrompt);
       this.$nextTick(() => this.modal.show());
     },
     async copyToClipboard(text) {
