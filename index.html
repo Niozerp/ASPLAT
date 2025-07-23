@@ -59,7 +59,7 @@
   <!-- Prompt list -->
   <div class="row g-3" v-if="!loading && filteredPrompts.length">
     <div class="col-12 col-md-6 col-lg-4" v-for="p in filteredPrompts" :key="p.title">
-      <div class="card prompt-card h-100" @click="openPrompt(p)">
+      <div class="card prompt-card h-100" @click="copyToClipboard(p.raw)"> <!--@click="openPrompt(p)">-->
         <div class="card-body">
           <h5 class="card-title mb-2">{{ p.title }}</h5>
           <p class="card-tex">{{p.raw}}</p>
@@ -116,7 +116,7 @@ var app = new Vue({
     error: '',
     activePrompt: [],
     modal: null,
-    refreshCheck: 'v0.0.11'
+    refreshCheck: 'v0.0.12'
     
   },
   mounted() {
