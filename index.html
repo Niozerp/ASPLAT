@@ -62,7 +62,7 @@
       <div class="card prompt-card h-100" @click="openPrompt(p)">
         <div class="card-body">
           <h5 class="card-title mb-2">{{ p.title }}</h5>
-          <p class="card-text" v-html="p.raw"></p>
+          <p class="card-tex">{{p.raw}}</p>
         </div>
         <div class="card-footer small text-muted d-flex justify-content-between">
           <span>{{ p.wordCount }} words</span>
@@ -116,7 +116,7 @@ var app = new Vue({
     error: '',
     activePrompt: { title: '', raw: '', rendered: '', githubUrl: '' },
     modal: null,
-    refreshCheck: 'v0.0.9'
+    refreshCheck: 'v0.0.10'
     
   },
   mounted() {
