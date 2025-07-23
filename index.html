@@ -61,7 +61,7 @@
       <div class="card prompt-card h-100" @click="openPrompt(p)">
         <div class="card-body">
           <h5 class="card-title mb-2">{{ p.title }}</h5>
-          <p class="card-text text-truncate" v-html="p.preview"></p>
+          <p class="card-text" v-html="p.preview"></p>
         </div>
         <div class="card-footer small text-muted d-flex justify-content-between">
           <span>{{ p.wordCount }} words</span>
@@ -114,7 +114,9 @@ new Vue({
     loading: false,
     error: '',
     activePrompt: { title: '', raw: '', rendered: '', githubUrl: '' },
-    modal: null
+    modal: null,
+    refreshCheck: 'v0.0.3'
+    
   },
   mounted() {
     this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
@@ -242,6 +244,10 @@ new Vue({
     refreshData() {
       this.fetchAll();
     }
+  },
+  // END OF METHODS
+  mounted: function() {
+    console.log(this.refreshCheck);
   }
 });
 </script>
