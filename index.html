@@ -41,7 +41,7 @@
 <div id="app" class="container py-4">
   <h1>Aush's Structured Prompt Library AI Toolkit</h1>
   <h5>{{ refreshCheck }}</h5>
-  <div class="row mb-3 search-input bg-white py-3 shadow-sm rounded">
+  <div class="row mb-3 search-input bg-body-tertiary py-3 shadow-sm rounded">
     <div class="col-12 col-md-8 mb-2 mb-md-0">
       <input v-model="searchQuery" @input="runSearch" type="text"
              class="form-control form-control-lg"
@@ -134,7 +134,7 @@ new Vue({
     error: '',
     activePrompt: {},
     modal: null,
-    refreshCheck: 'v0.0.18'
+    refreshCheck: 'v0.0.19'
   },
   mounted() {
     this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
