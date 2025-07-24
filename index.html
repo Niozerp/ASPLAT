@@ -134,7 +134,7 @@ new Vue({
     error: '',
     activePrompt: {},
     modal: null,
-    refreshCheck: 'v0.0.17'
+    refreshCheck: 'v0.0.18'
   },
   mounted() {
     this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
@@ -196,7 +196,7 @@ new Vue({
       return res.data;
     },
     makeGithubUrl(path) {
-      return `https://github.com/${this.github.owner}/${this.github.repo}/tree/${this.github.ref}/${path}`;
+      return `https://github.com/${this.github.owner}/${this.github.repo}/blob/main/data/patterns/${path}/system.md`;
     },
     setupSearch() {
       this.fuse = new Fuse(this.prompts, {
