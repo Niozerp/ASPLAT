@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mermaid Flowchart Template</title>
+  <style>
+    html, body { height: 100%; margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 1.25rem; margin: 0 0 12px; }
+    .hint { font-size: 0.9rem; opacity: 0.8; margin-bottom: 18px; }
+    .mermaid { border: 1px dashed #ccc; border-radius: 14px; padding: 16px; }
+    textarea { width: 100%; height: 180px; margin-top: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 14px; }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #ddd; background: #f5f5f5; cursor: pointer; }
+    button:active { transform: translateY(1px); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mermaid Flowchart</h1>
+    <div class="hint">Edit the diagram source below and click <b>Render</b>. This uses Mermaid via ESM and renders any <code>.mermaid</code> block.</div>
+
+    <!-- Live diagram -->
+    <div id="diagram" class="mermaid">
+flowchart TD
+    A([Start]) --> B[Define objective]
+    B --> C[List steps]
+    C --> D{Decision?}
+    D -- Yes --> E[Branch A]
+    D -- No  --> F[Branch B]
+    E --> G{More steps?}
+    F --> G
+    G -- Yes --> C
+    G -- No  --> H([End])
+    </div>
+
+    <!-- Editor -->
+    <textarea id="src">flowchart TD
+A([Start]) --> B[Define objective]
+B --> C[List steps]
+C --> D{Decision?}
+D -- Yes --> E[Branch A]
+D -- No  --> F[Branch B]
+E --> G{More steps?}
+F --> G
+G -- Yes --> C
+G -- No  --> H([End])
+</textarea>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+      <button id="renderBtn">Render</button>
+      <span class="hint">Pro tip: keep nodes short; use decisions sparingly.</span>
+    </div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+
+    const src = document.getElementById('src');
+    const btn = document.getElementById('renderBtn');
+    const container = document.getElementById('diagram');
+
+    async function renderFromText(text) {
+      // Clear, then render new diagram into the container
+      container.textContent = text.trim();
+      // Re-run Mermaid on the updated element (v10+ API)
+      await mermaid.run({ nodes: [container] });
+    }
+
+    btn.addEventListener('click', async () => {
+      try {
+        await renderFromText(src.value);
+      } catch (err) {
+        alert('Mermaid render error: ' + (err?.message || err));
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
