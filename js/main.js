@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   try {
     // 1. Fetch and parse header
 
-    const headerResponse = await fetch("/_header.html");
+    const headerResponse = await fetch("../_header.html");
 
     if (!headerResponse.ok) throw new Error("Header fetch failed");
     const headerData = await headerResponse.text();
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // 4. Fetch and inject footer
 
-    const footerResponse = await fetch("/_footer.html");
+    const footerResponse = await fetch("../_footer.html");
 
     if (!footerResponse.ok) throw new Error("Footer fetch failed");
     const footerData = await footerResponse.text();
