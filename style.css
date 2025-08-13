@@ -1,0 +1,73 @@
+/* General styles */
+body {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Styles from index.html */
+.prompt-card {
+  cursor: pointer;
+  transition: box-shadow .15s ease;
+}
+
+.prompt-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+}
+
+.search-input {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.spinner {
+  height: 3rem;
+  width: 3rem;
+}
+
+/* Styles from flowchart.html */
+.brand-gradient {
+  background: linear-gradient(135deg, rgba(56,189,248,.2), rgba(99,102,241,.2));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.mermaid-diagram {
+  border: 1px dashed rgba(255,255,255,.2);
+  border-radius: .75rem;
+  padding: 1rem;
+  overflow: auto;
+  max-height: 70vh;
+  background: rgba(255,255,255,.02);
+}
+
+.mermaid-diagram svg {
+  width: 100%;
+  height: auto;
+}
+
+textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* Shared navigation styles */
+.navbar {
+  margin-bottom: 2rem;
+}
+
+/* Page loader */
+#loader {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+}
+
+.content-hidden {
+  display: none;
+}
