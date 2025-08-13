@@ -1,42 +1,12 @@
-<!doctype html>
-<html lang="en" data-bs-theme="dark">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mermaid Flowchart — Vue 2.5 + Bootstrap 5 (Dark)</title>
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    body { min-height: 100vh; }
-    .brand-gradient {
-      background: linear-gradient(135deg, rgba(56,189,248,.2), rgba(99,102,241,.2));
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .mermaid-diagram {
-      border: 1px dashed rgba(255,255,255,.2);
-      border-radius: .75rem;
-      padding: 1rem;
-      overflow: auto;
-      max-height: 70vh;
-      background: rgba(255,255,255,.02);
-    }
-    .mermaid-diagram svg { width: 100%; height: auto; }
-    textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-  </style>
-</head>
-<body>
-  <header class="brand-gradient">
-    <div class="container-lg py-3 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-2">
-        <span class="badge rounded-pill text-bg-info">Mermaid</span>
-        <h1 class="h5 mb-0">Flowchart Builder</h1>
-        <h3> <a href="index.html">AI Prompt Library</a></
-      </div>
-      <div class="text-body-secondary small">Vue 2.5 • Bootstrap 5 • Dark</div>
-    </div>
-  </header>
+<div id="loader">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
-  <main id="app" class="container-lg py-4">
+<div id="header-placeholder"></div>
+
+  <main id="app" class="container-lg py-4 content-hidden">
     <div class="row g-4">
       <!-- Editor -->
       <section class="col-lg-6">
@@ -89,70 +59,76 @@
 
     const DEFAULT_SRC = `flowchart TD\n    A([Start]) --> B[Define objective]\n    B --> C[List steps]\n    C --> D{Decision?}\n    D -- Yes --> E[Branch A]\n    D -- No  --> F[Branch B]\n    E --> G{More steps?}\n    F --> G\n    G -- Yes --> C\n    G -- No  --> H([End])`;
 
-    // Create Vue app
-    const app = new window.Vue({
-      el: '#app',
-      data() {
-        return {
-          source: DEFAULT_SRC,
-          svg: '',
-          error: ''
-        };
-      },
-      methods: {
-        async render() {
-          this.error = '';
-          const def = (this.source || '').trim();
-          if (!def) { this.svg = ''; return; }
-          try {
-            const { svg, bindFunctions } = await mermaid.render('mmd-' + Math.random().toString(36).slice(2), def);
-            this.svg = svg;
-            this.$nextTick(() => { if (typeof bindFunctions === 'function') bindFunctions(this.$refs.diagram); });
-          } catch (e) {
-            this.error = e && e.message ? e.message : String(e);
-          }
+    document.addEventListener('layout-loaded', function() {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('app').classList.remove('content-hidden');
+      // Create Vue app
+      const app = new window.Vue({
+        el: '#app',
+        data() {
+          return {
+            source: DEFAULT_SRC,
+            svg: '',
+            error: ''
+          };
         },
-        reset() {
-          this.source = DEFAULT_SRC;
-          this.render();
-        },
-        async copy() {
-          try {
-            if (!this.svg) return;
-            // Plain text fallback (diagram source) if clipboard can't take HTML
-            const blob = new Blob([this.svg], { type: 'image/svg+xml' });
-            const item = new ClipboardItem({ 'image/svg+xml': blob });
-            await navigator.clipboard.write([item]);
-          } catch (err) {
-            // Fallback to copying source
-            await navigator.clipboard.writeText(this.svg || this.source || '');
-          }
-        },
-        download() {
-          if (!this.svg) return;
-          const a = document.createElement('a');
-          a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(this.svg);
-          a.download = 'diagram.svg';
-          a.click();
-        },
-        onKeydown(e) {
-          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            e.preventDefault();
+        methods: {
+          async render() {
+            this.error = '';
+            const def = (this.source || '').trim();
+            if (!def) { this.svg = ''; return; }
+            try {
+              const { svg, bindFunctions } = await mermaid.render('mmd-' + Math.random().toString(36).slice(2), def);
+              this.svg = svg;
+              this.$nextTick(() => { if (typeof bindFunctions === 'function') bindFunctions(this.$refs.diagram); });
+            } catch (e) {
+              this.error = e && e.message ? e.message : String(e);
+            }
+          },
+          reset() {
+            this.source = DEFAULT_SRC;
             this.render();
+          },
+          async copy() {
+            try {
+              if (!this.svg) return;
+              // Plain text fallback (diagram source) if clipboard can't take HTML
+              const blob = new Blob([this.svg], { type: 'image/svg+xml' });
+              const item = new ClipboardItem({ 'image/svg+xml': blob });
+              await navigator.clipboard.write([item]);
+            } catch (err) {
+              // Fallback to copying source
+              await navigator.clipboard.writeText(this.svg || this.source || '');
+            }
+          },
+          download() {
+            if (!this.svg) return;
+            const a = document.createElement('a');
+            a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(this.svg);
+            a.download = 'diagram.svg';
+            a.click();
+          },
+          onKeydown(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+              e.preventDefault();
+              this.render();
+            }
           }
+        },
+        mounted() {
+          this.render();
+          window.addEventListener('keydown', this.onKeydown);
+        },
+        beforeDestroy() {
+          window.removeEventListener('keydown', this.onKeydown);
         }
-      },
-      mounted() {
-        this.render();
-        window.addEventListener('keydown', this.onKeydown);
-      },
-      beforeDestroy() {
-        window.removeEventListener('keydown', this.onKeydown);
-      }
+      });
     });
   </script>
 
   <!-- Bootstrap JS (optional, for components if you extend later) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/main.js"></script>
