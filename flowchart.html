@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mermaid Flowchart Template</title>
+  <title>Mermaid Flowchart Template (Fixed)</title>
   <style>
     html, body { height: 100%; margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
@@ -18,7 +18,8 @@
 <body>
   <div class="wrap">
     <h1>Mermaid Flowchart</h1>
-    <div class="hint">Edit the diagram source below and click <b>Render</b>. This uses Mermaid via ESM and renders any <code>.mermaid</code> block.</div>
+    <h3> <a href="index.html">Prompt Library</a></h3>
+    <div class="hint">Edit the diagram source below and click <b>Render</b>. This now uses <code>mermaid.render()</code> so re-renders don't break.</div>
 
     <!-- Live diagram -->
     <div id="diagram" class="mermaid">
@@ -54,26 +55,33 @@ G -- No  --> H([End])
 
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
+
+    // Don't auto-run on load; we'll control rendering manually.
+    mermaid.initialize({ startOnLoad: false });
 
     const src = document.getElementById('src');
     const btn = document.getElementById('renderBtn');
     const container = document.getElementById('diagram');
 
     async function renderFromText(text) {
-      // Clear, then render new diagram into the container
-      container.textContent = text.trim();
-      // Re-run Mermaid on the updated element (v10+ API)
-      await mermaid.run({ nodes: [container] });
-    }
-
-    btn.addEventListener('click', async () => {
+      const def = text.trim();
       try {
-        await renderFromText(src.value);
+        // Use the dedicated render API so we aren't blocked by data-processed flags
+        const { svg, bindFunctions } = await mermaid.render('mmd-' + Math.random().toString(36).slice(2), def);
+        container.innerHTML = svg;
+        if (typeof bindFunctions === 'function') bindFunctions(container);
       } catch (err) {
         alert('Mermaid render error: ' + (err?.message || err));
         console.error(err);
       }
+    }
+
+    // Initial render from the inline definition
+    renderFromText(container.textContent);
+
+    // Re-render from the editor when clicking the button
+    btn.addEventListener('click', () => {
+      renderFromText(src.value);
     });
   </script>
 </body>
