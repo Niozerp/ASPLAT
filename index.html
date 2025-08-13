@@ -1,44 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ASPLAT</title>
+<div id="loader">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>✨</text></svg>">
+<div id="header-placeholder"></div>
 
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-  <!-- Vue.js 2.5 (dev build) -->
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
-  <script>Vue.config.devtools = true; Vue.config.productionTip = false;</script>
-
-  <!-- Axios -->
-  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
-
-  <!-- Fuse.js -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-
-  <!-- Marked (Markdown parser) -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
-
-  <!-- DOMPurify (for sanitizing HTML) -->
-  <script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
-
-  <style>
-    body { background-color: #f8f9fa; }
-    .prompt-card { cursor: pointer; transition: box-shadow .15s ease; }
-    .prompt-card:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); }
-    .search-input { position: sticky; top: 0; z-index: 1030; }
-    pre { white-space: pre-wrap; word-break: break-word; }
-    .spinner { height: 3rem; width: 3rem; }
-  </style>
-</head>
-<body class="bg-dark text-light">
-<div id="app" class="container py-4">
+<div id="app" class="container py-4 content-hidden">
   <h1>Aush's Structured Prompt Library AI Toolkit</h1>
   <h5>{{ refreshCheck }}</h5>
   <div class="row mb-3 search-input bg-body-tertiary py-3 shadow-sm rounded">
@@ -54,7 +22,6 @@
         <span v-else>Reload from GitHub</span>
       </button>
     </div>
-<h3> <a href="flowchart.html">Flowchart Tool</a></h3>
   </div>
 
   <!-- Loading state -->
@@ -111,9 +78,21 @@
   </div>
 
 
-<!-- Bootstrap JS bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Vue.js 2.5 (dev build) -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script>Vue.config.devtools = true; Vue.config.productionTip = false;</script>
+
+<!-- Axios -->
+<script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+
+<!-- Fuse.js -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+<!-- Marked (Markdown parser) -->
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+
+<!-- DOMPurify (for sanitizing HTML) -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
 
 <script>
 const GITHUB = {
@@ -123,150 +102,156 @@ const GITHUB = {
   basePath: 'data/patterns'
 };
 
-new Vue({
-  el: '#app',
-  data: {
-    github: GITHUB,
-    prompts: [],
-    filteredPrompts: [],
-    fuse: null,
-    searchQuery: '',
-    loading: false,
-    error: '',
-    activePrompt: {},
-    modal: null,
-    refreshCheck: 'v0.0.23'
-  },
-  mounted() {
-    this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
-    this.loadFromCache();
-    this.fetchAll({ showSpinner: false });
-  },
-  methods: {
-    async fetchAll({ showSpinner = true } = {}) {
-      if (showSpinner) this.loading = true;
-      this.error = '';
-      try {
-        const folders = await this.listFolders();
-        const fetches = folders.map(f =>
-          this.getSystemMd(f.path)
-            .then(raw => ({ name: f.name, raw }))
-            .catch(() => null)
-        );
-        const items = await Promise.all(fetches);
-        const results = items
-          .filter(item => item && item.raw)
-          .map(({ name, raw }) => {
-            const trimmedRaw = raw.replace(/\s+/g, ' ').trim();
-            const previewRaw = trimmedRaw.slice(0, 200) + (trimmedRaw.length > 200 ? '…' : '');
-            const rendered = marked.parse(raw);
-            const preview = marked.parse(previewRaw);
-            return {
-              title: name,
-              raw,
-              rendered,
-              preview,
-              wordCount: trimmedRaw.split(/\s+/).length,
-              githubUrl: this.makeGithubUrl(name)
-            };
-          });
-        results.sort((a, b) => a.title.localeCompare(b.title));
-        this.prompts = results;
-        this.filteredPrompts = results;
-        this.setupSearch();
-        this.saveToCache();
-      } catch (err) {
-        console.error(err);
-        if (err.response?.status === 403 && err.response.headers['x-ratelimit-remaining'] === '0') {
-          this.error = '⚠️ GitHub API rate limit exceeded. Please wait a few minutes and try again.';
-        } else {
-          this.error = `Error loading prompts: ${err.response?.status || ''} ${err.message || ''}`;
-        }
-      } finally {
-        if (showSpinner) this.loading = false;
-      }
+document.addEventListener('layout-loaded', function() {
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('app').classList.remove('content-hidden');
+  new Vue({
+    el: '#app',
+    data: {
+      github: GITHUB,
+      prompts: [],
+      filteredPrompts: [],
+      fuse: null,
+      searchQuery: '',
+      loading: false,
+      error: '',
+      activePrompt: {},
+      modal: null,
+      refreshCheck: 'v0.0.23'
     },
-    async listFolders() {
-      const url = `https://api.github.com/repos/${this.github.owner}/${this.github.repo}/contents/${this.github.basePath}?ref=${this.github.ref}`;
-      const { data } = await axios.get(url, { headers: { 'Accept': 'application/vnd.github+json' } });
-      return data.filter(item => item.type === 'dir');
+    mounted() {
+      this.modal = new bootstrap.Modal(document.getElementById('promptModal'));
+      this.loadFromCache();
+      this.fetchAll({ showSpinner: false });
     },
-    async getSystemMd(folderPath) {
-      const url = `https://raw.githubusercontent.com/${this.github.owner}/${this.github.repo}/${this.github.ref}/${folderPath}/system.md`;
-      const res = await axios.get(url);
-      return res.data;
-    },
-    makeGithubUrl(path) {
-      return `https://github.com/${this.github.owner}/${this.github.repo}/blob/main/data/patterns/${path}/system.md`;
-    },
-    setupSearch() {
-      this.fuse = new Fuse(this.prompts, {
-        keys: ['title', 'raw'],
-        threshold: 0.3,
-        ignoreLocation: true,
-        minMatchCharLength: 2
-      });
-    },
-    runSearch() {
-      const q = this.searchQuery.trim();
-      this.filteredPrompts = q
-        ? this.fuse.search(q).map(r => r.item)
-        : this.prompts;
-    },
-    openPrompt(p) {
-      this.activePrompt = p;
-      this.$nextTick(() => this.modal.show());
-    },
-    sanitized(html) {
-      return DOMPurify.sanitize(html);
-    },
-    async copyToClipboard(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        this.toast('Copied to clipboard');
-      } catch {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        this.toast('Copied to clipboard (fallback)');
-      }
-    },
-    toast(msg) {
-      const el = document.createElement('div');
-      el.className = 'toast align-items-center text-bg-dark border-0 position-fixed bottom-0 end-0 m-3';
-      el.setAttribute('role', 'alert');
-      el.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
-      document.body.appendChild(el);
-      const t = new bootstrap.Toast(el, { delay: 2000 });
-      t.show();
-      el.addEventListener('hidden.bs.toast', () => el.remove());
-    },
-    saveToCache() {
-      try {
-        const payload = { prompts: this.prompts, ts: Date.now() };
-        localStorage.setItem('fabric_cache', JSON.stringify(payload));
-      } catch {};
-    },
-    loadFromCache() {
-      try {
-        const raw = localStorage.getItem('fabric_cache');
-        if (!raw) return;
-        const { prompts } = JSON.parse(raw);
-        if (prompts && prompts.length) {
-          this.prompts = prompts;
-          this.filteredPrompts = prompts;
+    methods: {
+      async fetchAll({ showSpinner = true } = {}) {
+        if (showSpinner) this.loading = true;
+        this.error = '';
+        try {
+          const folders = await this.listFolders();
+          const fetches = folders.map(f =>
+            this.getSystemMd(f.path)
+              .then(raw => ({ name: f.name, raw }))
+              .catch(() => null)
+          );
+          const items = await Promise.all(fetches);
+          const results = items
+            .filter(item => item && item.raw)
+            .map(({ name, raw }) => {
+              const trimmedRaw = raw.replace(/\s+/g, ' ').trim();
+              const previewRaw = trimmedRaw.slice(0, 200) + (trimmedRaw.length > 200 ? '…' : '');
+              const rendered = marked.parse(raw);
+              const preview = marked.parse(previewRaw);
+              return {
+                title: name,
+                raw,
+                rendered,
+                preview,
+                wordCount: trimmedRaw.split(/\s+/).length,
+                githubUrl: this.makeGithubUrl(name)
+              };
+            });
+          results.sort((a, b) => a.title.localeCompare(b.title));
+          this.prompts = results;
+          this.filteredPrompts = results;
           this.setupSearch();
+          this.saveToCache();
+        } catch (err) {
+          console.error(err);
+          if (err.response?.status === 403 && err.response.headers['x-ratelimit-remaining'] === '0') {
+            this.error = '⚠️ GitHub API rate limit exceeded. Please wait a few minutes and try again.';
+          } else {
+            this.error = `Error loading prompts: ${err.response?.status || ''} ${err.message || ''}`;
+          }
+        } finally {
+          if (showSpinner) this.loading = false;
         }
-      } catch {};
-    },
-    refreshData() {
-      this.fetchAll();
+      },
+      async listFolders() {
+        const url = `https://api.github.com/repos/${this.github.owner}/${this.github.repo}/contents/${this.github.basePath}?ref=${this.github.ref}`;
+        const { data } = await axios.get(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+        return data.filter(item => item.type === 'dir');
+      },
+      async getSystemMd(folderPath) {
+        const url = `https://raw.githubusercontent.com/${this.github.owner}/${this.github.repo}/${this.github.ref}/${folderPath}/system.md`;
+        const res = await axios.get(url);
+        return res.data;
+      },
+      makeGithubUrl(path) {
+        return `https://github.com/${this.github.owner}/${this.github.repo}/blob/main/data/patterns/${path}/system.md`;
+      },
+      setupSearch() {
+        this.fuse = new Fuse(this.prompts, {
+          keys: ['title', 'raw'],
+          threshold: 0.3,
+          ignoreLocation: true,
+          minMatchCharLength: 2
+        });
+      },
+      runSearch() {
+        const q = this.searchQuery.trim();
+        this.filteredPrompts = q
+          ? this.fuse.search(q).map(r => r.item)
+          : this.prompts;
+      },
+      openPrompt(p) {
+        this.activePrompt = p;
+        this.$nextTick(() => this.modal.show());
+      },
+      sanitized(html) {
+        return DOMPurify.sanitize(html);
+      },
+      async copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          this.toast('Copied to clipboard');
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          this.toast('Copied to clipboard (fallback)');
+        }
+      },
+      toast(msg) {
+        const el = document.createElement('div');
+        el.className = 'toast align-items-center text-bg-dark border-0 position-fixed bottom-0 end-0 m-3';
+        el.setAttribute('role', 'alert');
+        el.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+        document.body.appendChild(el);
+        const t = new bootstrap.Toast(el, { delay: 2000 });
+        t.show();
+        el.addEventListener('hidden.bs.toast', () => el.remove());
+      },
+      saveToCache() {
+        try {
+          const payload = { prompts: this.prompts, ts: Date.now() };
+          localStorage.setItem('fabric_cache', JSON.stringify(payload));
+        } catch {};
+      },
+      loadFromCache() {
+        try {
+          const raw = localStorage.getItem('fabric_cache');
+          if (!raw) return;
+          const { prompts } = JSON.parse(raw);
+          if (prompts && prompts.length) {
+            this.prompts = prompts;
+            this.filteredPrompts = prompts;
+            this.setupSearch();
+          }
+        } catch {};
+      },
+      refreshData() {
+        this.fetchAll();
+      }
     }
-  }
+  });
 });
 </script>
-</body>
-</html>
+
+<div id="footer-placeholder"></div>
+
+<script src="js/main.js"></script>
