@@ -1,3 +1,4 @@
+const headerTemplate = `
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
@@ -39,3 +40,12 @@
     </div>
   </div>
 </nav>
+`;
+
+const footerTemplate = `
+</body>
+</html>
+`;
+
+// This script will be included in the head, so we can write the header.
+document.write(headerTemplate);
