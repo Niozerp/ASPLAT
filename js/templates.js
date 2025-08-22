@@ -36,6 +36,9 @@ const headerTemplate = `
         <li class="nav-item">
           <a class="nav-link" href="flowchart.html">Flowchart Tool</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="feature-request.html">Feature Request</a>
+        </li>
       </ul>
     </div>
   </div>
