@@ -46,6 +46,7 @@
   </div>
 </nav>
 
+
 <div id="app" class="container-fluid pt-4">
   <div class="row">
     <!-- Sidebar -->
@@ -71,6 +72,7 @@
           </div>
           <button @click="showTemplateModal" class="btn btn-sm btn-outline-secondary me-2">View Template</button>
           <button @click="clearEditor" class="btn btn-sm btn-outline-danger">Clear</button>
+
         </div>
       </div>
 
@@ -99,6 +101,7 @@
           </div>
         </div>
       </div>
+
     </main>
   </div>
 </div>
@@ -411,6 +414,7 @@ new Vue({
   el: '#app',
   data: {
     markdownInput: '# Welcome to the TELOS Builder\n\nSelect a mode, add building blocks, and start writing.',
+
     activeTemplate: 'corporate',
     buildingBlocks: [],
     corporateBuildingBlocks: [
@@ -449,6 +453,8 @@ new Vue({
       { name: 'Log (Journal)', template: '## LOG (Journal)\n\n' }
     ],
     modal: null
+
+    ]
   },
   computed: {
     renderedMarkdown() {
@@ -456,6 +462,7 @@ new Vue({
     },
     corporateTemplate() { return corporateTemplate; },
     personalTemplate() { return personalTemplate; }
+
   },
   watch: {
     activeTemplate(newVal) {
@@ -465,6 +472,7 @@ new Vue({
   mounted() {
     this.modal = new bootstrap.Modal(document.getElementById('templateModal'));
   },
+
   created() {
     this.buildingBlocks = this.corporateBuildingBlocks;
   },
@@ -482,6 +490,7 @@ new Vue({
     },
     addBlock(template) {
       this.markdownInput += (this.markdownInput ? '\n\n' : '') + template;
+
     }
   }
 });
@@ -489,3 +498,4 @@ new Vue({
 
 </body>
 </html>
+
