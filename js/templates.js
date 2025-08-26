@@ -54,4 +54,3 @@ const footerTemplate = `
 `;
 
 // This script will be included in the head, so we can write the header.
-document.write(headerTemplate);
