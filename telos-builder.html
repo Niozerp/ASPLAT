@@ -25,7 +25,6 @@
           </div>
           <button @click="showTemplateModal" class="btn btn-sm btn-outline-secondary me-2">View Template</button>
           <button @click="clearEditor" class="btn btn-sm btn-outline-danger">Clear</button>
-
         </div>
       </div>
 
@@ -54,7 +53,6 @@
           </div>
         </div>
       </div>
-
     </main>
   </div>
 </div>
@@ -373,36 +371,36 @@ new Vue({
       { name: 'Document Purpose', template: '## Document Purpose\n\n' },
       { name: 'Company History', template: '## Company History\n\n' },
       { name: 'Company Mission', template: '## Company Mission\n\n' },
-      { name: 'Company Goals', template: '## Company Goals\n\n- G1:' },
-      { name: 'Company KPIs', template: '## Company KPIs\n\n- K1:' },
-      { name: 'Security Team Mission', template: '## Security Team Mission\n\n- SM1:' },
-      { name: 'Security Team Goals', template: '## Security Team Goals\n\n- SG1:' },
-      { name: 'Security Team KPIs', template: '## Security Team KPIs\n\n- SK1:' },
-      { name: 'Risk Register', template: '## Risk Register\n\n- R1:' },
+      { name: 'Company Goals', template: '## Company Goals\n\n- G1: ' },
+      { name: 'Company KPIs', template: '## Company KPIs\n\n- K1: ' },
+      { name: 'Security Team Mission', template: '## Security Team Mission\n\n- SM1: ' },
+      { name: 'Security Team Goals', template: '## Security Team Goals\n\n- SG1: ' },
+      { name: 'Security Team KPIs', template: '## Security Team KPIs\n\n- SK1: ' },
+      { name: 'Risk Register', template: '## Risk Register\n\n- R1: ' },
       { name: 'Security Team Narrative', template: '## Security Team Narrative\n\n### Background\n\n' },
-      { name: 'Security Team Strategies', template: '## Security Team Strategies\n\n- STS1:' },
-      { name: 'Infrastructure Notes', template: '## Infrastructure Notes\n\n' },
+      { name: 'Security Team Strategies', template: '## Security Team Strategies\n\n- STS1: ' },
+      { name: 'Infrastructure Notes', template: '## Infrastructure Notes\n\n- ' },
       { name: 'Team', template: '## Team\n\nTEAM MEMBER | TEAM ASSIGNED | SKILLS | PAY LEVEL | LOCATION | PROJECTS\n\n' },
       { name: 'Projects', template: '## Projects\n\nPROJECT NAME | PROJECT DESCRIPTION | PROJECT PRIORITY | PROJECT MEMBERS | START DATE | END DATE | STATUS | PROJECT COST\n\n' },
-      { name: 'Current State', template: '## CURRENT STATE (KPIs, Metrics, Project Activity Updates, etc.)\n\n' }
+      { name: 'Current State', template: '## CURRENT STATE (KPIs, Metrics, Project Activity Updates, etc.)\n\n- YYYY/MM/DD: ' }
     ],
     personalBuildingBlocks: [
-      { name: 'Document Purpose', template: '## DOCUMENT PURPOSE\n\n' },
-      { name: 'History', template: '## HISTORY\n\n' },
-      { name: 'Problems', template: '## PROBLEMS\n\n- P1:' },
-      { name: 'Mission', template: '## MISSION\n\n- M1:' },
-      { name: 'Narratives', template: '## NARRATIVES\n\n- N1:' },
-      { name: 'Goals', template: '## GOALS\n\n- G1:' },
-      { name: 'Challenges', template: '## CHALLENGES\n\n- C1:' },
-      { name: 'Things I\'ve Been Wrong About', template: '## THINGS I\'VE BEEN WRONG ABOUT\n\n' },
-      { name: 'Ideas', template: '## IDEAS\n\n- I1:' },
-      { name: 'Predictions', template: '## PREDICTIONS\n\n' },
-      { name: 'Best Movies', template: '## BEST MOVIES\n\n' },
-      { name: 'Best Books', template: '## BEST BOOKS\n\n' },
-      { name: 'Wisdom', template: '## WISDOM\n\n' },
-      { name: 'Metrics', template: '## METRICS\n\n- K1:' },
-      { name: 'Traumas', template: '## TRAUMAS\n\n' },
-      { name: 'Log (Journal)', template: '## LOG (Journal)\n\n' }
+      { name: 'Document Purpose', template: '## DOCUMENT PURPOSE\n\nThis document captures the TELOS method of articulating a person\'s personal context so that they, and AI, can better understand them and help them improve. Pay attention to the items and the concepts here, and especially on how they work together.\n\nThe conceptual path is Problems -> Mission -> (Narratives) -> Goals -> Challenges -> Strategies —> Projects -> Journal. This means that any project you\'re doing can be mapped all the way back up to the problem(s) you\'re trying to solve. This gives you transparency and explainability in everything you\'re doing so you don\'t end up busy for days/months/years without being able to remember why you\'re doing what you\'re doing.\n\nOther sections that aren\'t those core sections are additional context to support them.' },
+      { name: 'History', template: '## HISTORY\n\n- ' },
+      { name: 'Problems', template: '## PROBLEMS\n\n- P1: ' },
+      { name: 'Mission', template: '## MISSION\n\n- M1: ' },
+      { name: 'Narratives', template: '## NARRATIVES\n\n- N1: ' },
+      { name: 'Goals', template: '## GOALS\n\n- G1: ' },
+      { name: 'Challenges', template: '## CHALLENGES\n\n- C1: ' },
+      { name: 'Things I\'ve Been Wrong About', template: '## THINGS I\'VE BEEN WRONG ABOUT\n\n- ' },
+      { name: 'Ideas', template: '## IDEAS\n\n- I1: ' },
+      { name: 'Predictions', template: '## PREDICTIONS\n\n- ' },
+      { name: 'Best Movies', template: '## BEST MOVIES\n\n- ' },
+      { name: 'Best Books', template: '## BEST BOOKS\n\n- ' },
+      { name: 'Wisdom', template: '## WISDOM\n\n- ' },
+      { name: 'Metrics', template: '## METRICS\n\n- K1: ' },
+      { name: 'Traumas', template: '## TRAUMAS\n\n- ' },
+      { name: 'Log (Journal)', template: '## LOG (Journal)\n\n- YYYY/MM/DD: ' }
     ],
     modal: null
 
