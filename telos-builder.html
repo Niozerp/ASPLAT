@@ -1,6 +1,5 @@
 <script src="js/templates.js"></script>
 <script>document.write(headerTemplate);</script>
-
 <div id="app" class="container-fluid pt-4">
   <div class="row">
     <!-- Sidebar -->
@@ -404,6 +403,7 @@ new Vue({
       { name: 'Log (Journal)', template: '## LOG (Journal)\n\n- YYYY/MM/DD: ' }
     ],
     modal: null
+
   },
   computed: {
     renderedMarkdown() {
@@ -420,6 +420,7 @@ new Vue({
   mounted() {
     this.modal = new bootstrap.Modal(document.getElementById('templateModal'));
   },
+
   created() {
     this.buildingBlocks = this.corporateBuildingBlocks;
   },
@@ -437,9 +438,11 @@ new Vue({
     },
     addBlock(template) {
       this.markdownInput += (this.markdownInput ? '\n\n' : '') + template;
+
     }
   }
 });
 </script>
 
 <script>document.write(footerTemplate);</script>
+
