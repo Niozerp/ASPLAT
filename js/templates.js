@@ -37,6 +37,9 @@ const headerTemplate = `
           <a class="nav-link" href="flowchart.html">Flowchart Tool</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="telos-builder.html">TELOS Builder</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="feature-request.html">Feature Request</a>
         </li>
       </ul>
@@ -51,4 +54,3 @@ const footerTemplate = `
 `;
 
 // This script will be included in the head, so we can write the header.
-document.write(headerTemplate);

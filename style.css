@@ -71,3 +71,32 @@ textarea {
 .content-hidden {
   display: none;
 }
+
+/* TELOS Builder styles */
+.sidebar {
+  background-color: #212529;
+}
+
+.editor, .preview {
+  height: 80vh;
+  background-color: #2b3035;
+  color: #f8f9fa;
+  border: 1px solid #495057;
+}
+
+.preview {
+  overflow-y: auto;
+}
+
+.sidebar .nav-link {
+  color: #adb5bd;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  border-radius: 0;
+}
+
+.sidebar .nav-link:hover {
+  color: #fff;
+  background-color: #343a40;
+}
