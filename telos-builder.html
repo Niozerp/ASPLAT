@@ -1,0 +1,445 @@
+<script src="js/templates.js"></script>
+<script>document.write(headerTemplate);</script>
+
+<div id="app" class="container-fluid pt-4">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+      <div class="position-sticky pt-3">
+        <h4 class="px-3">Building Blocks</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item" v-for="block in buildingBlocks" :key="block.name">
+            <button class="nav-link btn btn-link" @click="addBlock(block.template)">{{ block.name }}</button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">TELOS Builder</h1>
+        <div class="btn-toolbar mb-2 mb-md-0 align-items-center">
+          <div class="form-check form-switch me-3">
+            <input class="form-check-input" type="checkbox" id="template-toggle" @change="toggleTemplate" :checked="activeTemplate === 'personal'">
+            <label class="form-check-label" for="template-toggle">{{ activeTemplate === 'corporate' ? 'Corporate' : 'Personal' }}</label>
+          </div>
+          <button @click="showTemplateModal" class="btn btn-sm btn-outline-secondary me-2">View Template</button>
+          <button @click="clearEditor" class="btn btn-sm btn-outline-danger">Clear</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <h4>Markdown Editor</h4>
+          <textarea v-model="markdownInput" class="form-control editor"></textarea>
+        </div>
+        <div class="col-lg-6">
+          <h4>Live Preview</h4>
+          <div v-html="renderedMarkdown" class="preview border rounded p-3"></div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="templateModal" tabindex="-1" aria-labelledby="templateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+          <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+              <h5 class="modal-title" id="templateModalLabel">{{ activeTemplate === 'corporate' ? 'Corporate' : 'Personal' }} TELOS Template</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <pre style="white-space: pre-wrap; word-break: break-word;">{{ activeTemplate === 'corporate' ? corporateTemplate : personalTemplate }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js"></script>
+
+<script>
+const corporateTemplate = `## Document Purpose
+
+This document captures the SPQA policy and State for Alma Security, a security startup out of Redwood City, Ca.
+
+This is part of the SPQA context that will be used to answer questions and create artifacts for the company, e.g., company strategy, security strategy, quarterly security reports (QSRs), project plans, recommendations on which projects to undertake, which investments to take and avoid, and other such decisions.
+
+A major aspect of the SPQA system is the definition of the company's mission, goals, KPIs, and challenges. These shape everything within the company and thus should be used to shape the recommendations made when asked.
+
+In addition to the clearly stated goals and other defining characteristics listed above, there will also be a streaming list of updates coming into this system using the Activity document.
+
+Those will be changes, updates, or modifications to the direction of the company. For example, if Goal number 4 is to build a new datacenter in Boise, Idaho, but we see an update in the Activity section that says we've lost the ability to build in Boise, we should consider goal #4 out of the picture for prioritization and other decision purposes. In other words, the streaming activity log into this document should be considered updates to the core content.
+
+## Company History
+
+Alma Security was started by Chris Meyers, who was previously at Sigma Systems as CTO and HPE as a senior security engineer.
+
+He started the company becuase, "I saw a gap in the authentication market, where companies were only looking at one or two aspects of one's identity to do authentication. They we're looking at the whole picture and turning that into a continuous authentication story."
+
+## Company Mission
+
+The mission of Alma Security is to ensure businesses can continuously authenticate their users using their whole selves.
+
+## Company Goals (G1 means goal 1, G2 is goal 2, etc. Treat each item (goal/kpi/etc) as half as important as the one before it.)
+
+NOTE: Some goals are things like project rollouts which serve the higher goals. In that case they shouldn't always be considered so much lower priority because one is serving the other.
+
+## Company Goals
+
+- G1: Achieve 20% market share by January 2025
+- G2: Hit 10000 active customers by January 2025
+- G3: Hit a customer trust score of 90+% by January 2025
+- G4: Get churn below 5% by August 2024
+- G5: Launch in Europe by August 2024
+- G6: Launch in India by November 2024
+- G7: Launch Mood-monitor integration by February 2024
+- G8: Launch partnership with Apple Passkeys by June 2024
+
+## Company KPIs
+
+- K1: Current marketshare percentage
+- K2: Number of active customers
+- K3: Current churn percentage
+- K4: Launched_in_Europe (yes/no)
+- K4: Launched_in_India (yes/no)
+
+-----------------------------------------------------------------------------------------------------------------------
+
+## Security Team Mission
+
+- SM1: Protect Alma Security's customers and intellectual property from security and privacy incidents.
+
+## Security Team Goals
+
+- SG1: Secure all customer data -- especially biometric -- from security and privacy incidents.
+- SG2: Protect Alma Security's intellectual property from being captured by unathorized parties.
+- SG3: Reach a time to detect malicious behavior of less than 4 minutes by January 2025
+- SG4: Ensure the public trusts our product, because it's an authentication product we can't survive if people don't trust us.
+- SG5: Reach a time to remediate critical vulnerabilties on crown jewel systems of less than 16 hours by August 2025
+- SG6: Reach a time to remediate critical vulnerabilties on all systems of less than 3 days by August 2025
+- SG7: Complete audit of Apple Passkey integration by February 2025
+- SG8: Complete remediation of Apple Passkey vulns by February 2025
+
+## Security Team KPIs (How we measure the team)
+
+- SK1: TTD: Time to detect malicious behavior (Minutes)
+- SK1: TTI: Time to begin investigation of malicious behavior (Minutes)
+- SK3: TTR-CJC: Time to remediate critical vulnerabilities on crown jewel systems (Hours)
+- SK3: TTR-C: Time to remediate critical vulnerabilities on all systems (Hours)
+- SK4: PT: Public trust score (Complete, Significant, Moderate, Minimal, Distrust, N/A)
+
+## Risk Register (The things we're most worried about)
+
+- R1: Our infrastructure security team is understaffed by 50% after 5 key people left
+- R2: We are not currently monitoring our external perimeter for attack surface related vulnerabilities like open ports, listening applications, unknown hosts, unknown subdomains pointing to these things, etc. We only do scans once every couple of months and we don't really have anyone to look at the results
+- R3: It takes us multiple days to investigate potential malicious behavior on our systems.
+- R4: We lack a full list of our assets, including externally facing hosts, S3 buckets, etc., which make up our attack surface
+- R5: We have a low public trust score due to the events of 2022.
+
+## Security Team Narrative
+
+### Background
+
+Alma hired a new security team starting in January of 2023 and we have been building out the program since then. The philosophy and approach for the security team is to explicitly articulate what we believe the highest risks are to Alma, to deploy targeted strategies to address those risks, and to use clear, transparent KPIs to show progress towards our goals over time.
+
+### Current Risks
+
+So our risk register looks like this:
+
+1. We are understaffed by 50% after 5 key people left in 2022
+2. Our perimeter is not being monitored for attack surface related vulnerabilities
+3. It takes us too long to detect and start investigating malicious behavior on our systems
+4. We do not have a full list of our assets, which makes it difficult to know what we need to protect
+5. We have a low public trust score due to the events of 2022
+
+### Strategies
+
+As such, our strategies are as follows:
+
+1. Hire 5 more A-tier security professionals
+2. Purchase and implement an attack surface management solution
+3. Invest in our detection and response capabilities
+4. Purchase an asset inventory system that integrates with our attack surface management tool
+5. Leverage PR to share as much of our progress as possible with the public to rebuild trust
+
+### How We're Doing
+
+We believe being transparent about our progress is key to everything, and for that reason we maintain a limited number of KPIs that we update every quarter. These metrics will not change often. They will remain consistent so that it's easy to track how we're spending our resources and the progress we're making.
+
+Those KPIs are:
+
+1. Time to detect malicious behavior
+2. Time to start investigating malicious behavior
+3. Time to remediate critical vulnerabilities on crown jewel systems
+4. Time to remediate critical vulnerabilities on all systems
+5. Our public trust score
+
+As of $DATE$, our KPIs for these are currently:
+
+$GIVE CURRENT KPIs from the Activity section below$
+
+$INSERT GRAPHS OF KPI PROGRESS OVER TIME HERE$
+
+## Security Team Strategies
+
+- STS1: Hire 5 more A-tier security professionals
+- STS2: Purchase an attack surface management solution
+- STS3: Invest in our detection and response capabilities
+- STS4: Purchase an asset inventory system that integrates with our attack surface management tool
+
+## Infrastructure Notes (a basic description of our tech stack and various context around it)
+
+- We currenty have no WAF protecting our main web app but we're considering adding one
+- We have had some issues with S3 buckets becoming public, or being set up as public, which has lead to some close calls with customer data almost being exposed.
+- alma.amazon-domain.com is our primary S3 bucket that contains everything, but it's not public readable or listable
+- We have a root account for our AWS account that doesn't yet have 2FA on it, but we're working on fixing that within a few weeks (but it's been open for a few months)
+- We also use Postgres for all our databases.
+- Developers have root access to the all kubernetes nodes via SSH on port 45,001 using a shared developer key issued during laptop provisioning.
+- We're a kubernetes shop and do everything through AWS
+- We're logging most stuff to Cloudtrail and we kind of use guarduty, but we don't have a 24/7 team to monitor alerts and logs. We should add that to our list of challenges next time we update our overarll policy
+- We also have a Windows infrastructure because some key personell came from Microsoft. The DC is hosted in our head office which is in Redwood City, and anyone who works in that office (most of the 300 employees) uses that to log in when tehy start work. The domain is ALMA.
+- There's a domain-joined fileserver running Windows 2012 that most people use to upload new ideas and plans for new products. It uses Windows authentication from the domain.
+- We use a palo alto firewall with 2fa using windows authenticator tied to SSO.
+- The name of the AI system doing all this context creation using SPQA is Alma, which is also the name of the company.
+- We use Workday for HR stuff. Slack for realtime communications. Outlook 365 as a service. Sentinel One on the workstations and laptops. Servers in AWS are mostly Amazon Linux 2 with a few Ubuntu boxes that are a few years old.
+- We also primarily use Postgres for all of our systems.
+
+## Team
+
+TEAM MEMBER | TEAM ASSIGNED | SKILLS | PAY LEVEL | LOCATION | PROJECTS
+
+Nadia Khan | Detection and Response | D&R (Expert), AWS (Strong), Python (Expert), Kubernetes (Basic), Postgres (Basic) | $249K | Redwood City
+Chris Magann | Vulnerability Management | VM (Expert), AWS (Strong), Python (Basic), Postgres (Basic) | $212K | Redwood City
+Tigan Wang | Vulnerability Management | VM (Expert), AWS (Strong), Python (Basic), Postgres (Basic) | $217K | Redwood City
+
+## Projects
+
+PROJECT NAME | PROJECT DESCRIPTION | PROJECT PRIORITY | PROJECT MEMBERS | START DATE | END DATE | STATUS | PROJECT COST
+
+WAF Install | Install a WAF in front of our main web app | Critical | Nadia Khan | 2024-01-01 - Ongoing | In Progress | $112K one-time, $9K/month
+
+Multi-Factor Authentication (MFA) Rollout | Implement MFA across all internal and external systems | Critical | Chris Magaan | 2024-01-15 | 2024-05-01 | Planned | $80K one-time, $5K/month
+
+Procure and Implement ASM | Implement continuous monitoring for attack surface vulnerabilities | High | Tigan Wang | 2024-02-15 | 2024-06-15 | Not Started | $75K one-time, $6K/month
+
+Data Encryption Upgrade | Upgrade encryption protocols for all sensitive data | Medium | Nadia Khan | 2024-04-01 | 2024-08-01 | Planned | $95K one-time
+
+Incident Response Enhancement | Develop and implement a 24/7 incident response team | High | Nadia Khan | 2024-03-01 | 2024-07-01 | In Progress | $150K one-time, $10K/month
+
+Cloud Security Optimization | Optimize AWS cloud security configurations and practices | Medium | Tigan Wang | 2024-02-01 | 2024-06-01 | In Progress | $100K one-time, $8K/month
+
+S3 Bucket Security | Review and secure all S3 buckets to prevent data breaches | High | Chris Magaan | 2024-01-10 | 2024-04-10 | In Progress | $70K one-time, $5K/month
+
+SQL Injection Mitigation | Implement measures to eliminate SQL injection vulnerabilities | High | Tigan Wang | 2024-01-20 | 2024-05-20 | Not Started | $60K one-time
+
+## CURRENT STATE (KPIs, Metrics, Project Activity Updates, etc.)
+- October 2022: Current time to detect malicious behavior is 81 hours
+- October 2022: Current time to start investigating malicious behavior is 82 hours
+- October 2022: Current time to remediate critical vulnerabilities on crown jewel systems is 21 days
+- October 2022: Current time to remediate critical vulnerabilities on all systems is 51 days
+- January 2023: Current time to detect malicious behavior is 62 hours
+- January 2023: Current time to start investigating malicious behavior is 72 hours
+- January 2023: Current time to remediate critical vulnerabilities on crown jewel systems is 17 days
+- January 2023: Current time to remediate critical vulnerabilities on all systems is 43 days
+- July 2023: Current time to detect malicious behavior is 29 hours
+- July 2023: Current time to start investigating malicious behavior is 41 hours
+- July 2023: Current time to remediate critical vulnerabilities on crown jewel systems is 12 days
+- July 2023: Current time to remediate critical vulnerabilities on all systems is 29 days
+- November 2023: Current time to start detect malicious behavior is 12 hours
+- November 2023: Current time to start investigating malicious behavior is 16 hours
+- November 2023: Current time to remediate critical vulnerabilities on crown jewel systems is 9 days
+- November 2023: Current time to remediate critical vulnerabilities on all systems is 17 days
+- February 2024: Started attack surface management vendor selection process
+- January 2024: Current time to start detect malicious behavior is 9 hours
+- January 2024: Current time to start investigating malicious behavior is 14 hours
+- January 2024: Current time to remediate critical vulnerabilities on crown jewel systems is 8 days
+- January 2024: Current time to remediate critical vulnerabilities on all systems is 12 days
+- March 2024: We're now remediating crits on crown jewels in less than 6 days
+- April 2024: We're now remediating all criticals within 11 days
+- July 2024: Criticals are now being fixed in 9 days
+- On August 5 we got remediation of critical vulnerabilities down to 7 days`;
+
+const personalTemplate = `# TELOS
+
+## DOCUMENT PURPOSE
+
+This document captures the TELOS method of articulating a person's personal context so that they, and AI, can better understand them and help them improve. Pay attention to the items and the concepts here, and especially on how they work together.
+
+The conceptual path is Problems -> Mission -> (Narratives) -> Goals -> Challenges -> Strategies —> Projects -> Journal. This means that any project you're doing can be mapped all the way back up to the problem(s) you're trying to solve. This gives you transparency and explainability in everything you're doing so you don't end up busy for days/months/years without being able to remember why you're doing what you're doing.
+
+Other sections that aren't those core sections are additional context to support them.
+
+## HISTORY
+
+- I grew up in the Austin, TX area
+- I went to Mission High School, where I was bullied a decent amount
+- High school is where I met my 2 life-long friends, Doug and Mitchell who are still my friends today
+
+## PROBLEMS
+
+- P1: Not enough people understand how to build secure open-source software
+
+## MISSION
+
+- M1: Create and promote a standard for building secure open-source software
+
+## NARRATIVES
+
+- N1: I think open-sources software is the future, and it's currently extremely insecure, so I'm building a standard and platform for people to create secure versions of whatever they build
+- N2: I am the author of a platform that helps people create secure software.
+
+## GOALS
+
+- G1: Go on the Secure Code Warrior podcast by July of 2026
+- G2: Get at least 100,000 downloads of SecureOSS by December of 2026
+- G3: Wife by 35
+- G4: First kid by 36
+
+## CHALLENGES
+
+- C1: I'm super stressed at work and never have time to work on SOSS.
+- C2: I'm having trouble building the UI/UX for SOSS
+- C3: Someone else has a similar project and it's distracting me and demotivating me
+- C4: Hate dating apps
+
+## THINGS I'VE BEEN WRONG ABOUT
+
+- Thought AirBnB would shut down all the hotels. But they're doing fine.
+- I thought NVIDIA would have been crushed by Amazon by like 2021
+
+## IDEAS
+
+- I1: Go is the best language because of how universal and fast it is
+- I2: All government software should be OSS and run off SOSS
+- I3: Adam Smith's invisible hand doesn't apply to FOSS because incentives are misaligned
+
+## PREDICTIONS
+
+- NVIDIA hits $200 by August of 2026 (80%)
+- China attacks Taiwan by January of 2027 (60%)
+- The price of a gallon of milk hits ______ by ______________. (75%)
+
+## BEST MOVIES
+
+- More
+- Interstellar
+- Pulp Fiction
+- LA-LA Land
+
+## BEST BOOKS
+
+- Man's Search for Meaning
+- The Beginning of Infinity
+- The Science of Storytelling
+- War is Art
+
+## WISDOM
+
+- The magic you're looking for is in the work you're avoiding.
+- In practice, weak people behave very similarly to evil people. Don’t tie yourself to either.
+- When I am feeling low mood or low energy, 95% of the time it's because I have not 1) gotten up early, 2) gotten outside, 3) worked out, 4) gone for a walk, or done anything else physical in the last 2 days. Just go do that, and you'll instantly feel better.
+
+## METRICS
+
+- K1: 100K downloads by July 2026
+- K2: Wife by 35
+- K3: Kid by 36
+
+## TRAUMAS
+
+- Lost my Mom at an early age due to a traffic accident when I was in the car
+- A major house fire killed our family dog when I was 6
+
+## LOG (Journal)
+
+- 22/11/2019: Not sure why she reacted like that. Wasn't my fault. But we fixed it with pecan pie.
+- 22/01/2020: Got my first investor lined up!
+- 12/03/2020: Seem to have sprained my ankle or something. Keep limping on that side.`;
+
+new Vue({
+  el: '#app',
+  data: {
+    markdownInput: '# Welcome to the TELOS Builder\n\nSelect a mode, add building blocks, and start writing.',
+    activeTemplate: 'corporate',
+    buildingBlocks: [],
+    corporateBuildingBlocks: [
+      { name: 'Document Purpose', template: '## Document Purpose\n\n' },
+      { name: 'Company History', template: '## Company History\n\n' },
+      { name: 'Company Mission', template: '## Company Mission\n\n' },
+      { name: 'Company Goals', template: '## Company Goals\n\n- G1:' },
+      { name: 'Company KPIs', template: '## Company KPIs\n\n- K1:' },
+      { name: 'Security Team Mission', template: '## Security Team Mission\n\n- SM1:' },
+      { name: 'Security Team Goals', template: '## Security Team Goals\n\n- SG1:' },
+      { name: 'Security Team KPIs', template: '## Security Team KPIs\n\n- SK1:' },
+      { name: 'Risk Register', template: '## Risk Register\n\n- R1:' },
+      { name: 'Security Team Narrative', template: '## Security Team Narrative\n\n### Background\n\n' },
+      { name: 'Security Team Strategies', template: '## Security Team Strategies\n\n- STS1:' },
+      { name: 'Infrastructure Notes', template: '## Infrastructure Notes\n\n' },
+      { name: 'Team', template: '## Team\n\nTEAM MEMBER | TEAM ASSIGNED | SKILLS | PAY LEVEL | LOCATION | PROJECTS\n\n' },
+      { name: 'Projects', template: '## Projects\n\nPROJECT NAME | PROJECT DESCRIPTION | PROJECT PRIORITY | PROJECT MEMBERS | START DATE | END DATE | STATUS | PROJECT COST\n\n' },
+      { name: 'Current State', template: '## CURRENT STATE (KPIs, Metrics, Project Activity Updates, etc.)\n\n' }
+    ],
+    personalBuildingBlocks: [
+      { name: 'Document Purpose', template: '## DOCUMENT PURPOSE\n\n' },
+      { name: 'History', template: '## HISTORY\n\n' },
+      { name: 'Problems', template: '## PROBLEMS\n\n- P1:' },
+      { name: 'Mission', template: '## MISSION\n\n- M1:' },
+      { name: 'Narratives', template: '## NARRATIVES\n\n- N1:' },
+      { name: 'Goals', template: '## GOALS\n\n- G1:' },
+      { name: 'Challenges', template: '## CHALLENGES\n\n- C1:' },
+      { name: 'Things I\'ve Been Wrong About', template: '## THINGS I\'VE BEEN WRONG ABOUT\n\n' },
+      { name: 'Ideas', template: '## IDEAS\n\n- I1:' },
+      { name: 'Predictions', template: '## PREDICTIONS\n\n' },
+      { name: 'Best Movies', template: '## BEST MOVIES\n\n' },
+      { name: 'Best Books', template: '## BEST BOOKS\n\n' },
+      { name: 'Wisdom', template: '## WISDOM\n\n' },
+      { name: 'Metrics', template: '## METRICS\n\n- K1:' },
+      { name: 'Traumas', template: '## TRAUMAS\n\n' },
+      { name: 'Log (Journal)', template: '## LOG (Journal)\n\n' }
+    ],
+    modal: null
+  },
+  computed: {
+    renderedMarkdown() {
+      return DOMPurify.sanitize(marked.parse(this.markdownInput));
+    },
+    corporateTemplate() { return corporateTemplate; },
+    personalTemplate() { return personalTemplate; }
+  },
+  watch: {
+    activeTemplate(newVal) {
+      this.buildingBlocks = newVal === 'corporate' ? this.corporateBuildingBlocks : this.personalBuildingBlocks;
+    }
+  },
+  mounted() {
+    this.modal = new bootstrap.Modal(document.getElementById('templateModal'));
+  },
+  created() {
+    this.buildingBlocks = this.corporateBuildingBlocks;
+  },
+  methods: {
+    toggleTemplate() {
+      this.activeTemplate = this.activeTemplate === 'corporate' ? 'personal' : 'corporate';
+    },
+    showTemplateModal() {
+      if (this.modal) {
+        this.modal.show();
+      }
+    },
+    clearEditor() {
+      this.markdownInput = '';
+    },
+    addBlock(template) {
+      this.markdownInput += (this.markdownInput ? '\n\n' : '') + template;
+    }
+  }
+});
+</script>
+
+<script>document.write(footerTemplate);</script>
