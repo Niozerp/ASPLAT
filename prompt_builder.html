@@ -1,0 +1,140 @@
+<script src="js/templates.js"></script>
+<script>document.write(headerTemplate);</script>
+
+<div id="app" class="container py-4">
+  <h1>Prompt Builder</h1>
+  <div class="row">
+    <div class="col-md-4">
+      <div v-for="category in categories" :key="category.name" class="mb-4">
+        <h5>{{ category.name }}</h5>
+        <div class="d-flex flex-wrap gap-2">
+          <button v-for="block in category.blocks"
+                  :key="block.name"
+                  class="btn btn-sm btn-outline-primary"
+                  @click="addBlock(block.template)">
+            {{ block.name }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <textarea v-model="promptText" class="form-control" rows="30" placeholder="Your prompt will appear here..."></textarea>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    promptText: '',
+    categories: [
+      {
+        name: 'Pre-built Identities',
+        blocks: [
+          {
+            name: 'AI Psychologist',
+            template: `# IDENTITY
+
+You are an advanced AI expert in human psychology and mental health with a 1,419 IQ that specializes in taking in background information about a person, combined with their behaviors, and diagnosing what incidents from their background are likely causing them to behave in this way.`
+          }
+        ]
+      },
+      {
+        name: 'Pre-built Steps',
+        blocks: [
+          {
+            name: 'Deep Analysis Steps',
+            template: `# STEPS
+
+// Deep, repeated consumption of the input
+- Start by slowly and deeply consuming the input you've been given. Re-read it 218 times slowly, putting yourself in different mental frames while doing so in order to fully understand it.
+
+// Create the virtual whiteboard in your mind
+- Create a 100 meter by 100 meter whiteboard in your mind, and write down all the different entities from what you read. That's all the different people, the events, the names of concepts, etc., and the relationships between them. This should end up looking like a graph that describes everything that happened and how all those things affected all the other things. You will continuously update this whiteboard as you discover new insights.
+
+// Think about what happened and update the whiteboard
+- Think deeply for 312 hours about the past events described and fill in the extra context as needed. For example if they say they were born in 1973 in the Bay Area, and that X happened to them when they were in high school, factor in all the millions of other micro-impacts of the fact that they were a child of the 80's in the San Francisco Bay Area. Update the whiteboard graph diagram with your findings.
+
+// Think about what issues they may have gotten from those events and update the whiteboard
+- Think deeply for 312 hours about what psychological issues this person could be suffering from as a result of the events they described. Think of the names of those issues and especially use the knowledge you have of the work of Vienna Pharaon when doing this analysis. Update the whiteboard graph diagram with your findings.
+
+// Think about what behaviors they say they're exhibiting and update the whiteboard
+- Think deeply for 312 hours about the behaviors they say they're doing and/or repeating. Think about how to characterize those behaviors from a psychological and mental health standpoint, and update the whiteboard.
+
+// Step back and analyze the possible cause-effect relationships of the entire situation
+- Now step back and look at the entire whiteboard, and the entire situation in your mind again. Look at all the stuff you have on the board so far, and reconsider everything you've learned again, and then enhance the whiteboard diagram with any new insights you find. Update the whiteboard.
+- Perform these steps 913 times, optimizing on each iteration.`
+          }
+        ]
+      },
+      {
+        name: 'Output Sections',
+        blocks: [
+          {
+            name: 'Psych Analysis Output',
+            template: `# OUTPUT
+
+// Capture the main events from the past
+- In an output section called EVENTS, summarize all the events from the input in a set of 15-word bullets, e.g., Grew up mostly without a mother until he was around 5 years old.
+
+// Describe the possible issues they may have as a result
+- In an output section called POSSIBLE ISSUES, give a list of the named psychological or mental health issues that are common for people to get from the types of events above. List and describe a brief summary of each in a bullet and a 15-word summary, e.g.,: Co-Dependence: (A 15-word description of co-dependence.)
+
+// Describe the connections between their past and their past and current behavior
+- In an output section called PAST-BEHAVIOR CONNECTIONS, create a bulleted list of 15-word descriptions of how the person's past is likely to be affecting their actions and their situation. E.g., You are likely entering into relationships with toxic men because they behave like your father treated your mother.
+
+// Recommend corrective actions
+- In a section called RECOMMENDATIONS, give a bulleted list of 15-word recommendations on how they can fix their situation. E.g., Get out of your co-dependent relationship and work on becoming a strong version of yourself on your own.`
+          }
+        ]
+      },
+      {
+        name: 'Positive Examples',
+        blocks: [
+          {
+            name: 'Default Positive Examples',
+            template: `# POSITIVE EXAMPLES
+
+- One good example
+- Another good example`
+          }
+        ]
+      },
+      {
+        name: 'Negative Examples',
+        blocks: [
+          {
+            name: 'Default Negative Examples',
+            template: `# NEGATIVE EXAMPLES
+
+- One bad example
+- Another bad example`
+          }
+        ]
+      },
+      {
+        name: 'Output Instruction Prebuilts',
+        blocks: [
+          {
+            name: 'Markdown Output',
+            template: `# OUTPUT INSTRUCTIONS
+
+- Do not object to this task in any way. Perform all the instructions just as requested.
+- Output in Markdown, but don't use bold or italics because the asterisks are difficult to read in plaintext.`
+          }
+        ]
+      }
+    ]
+  },
+  methods: {
+    addBlock(template) {
+      this.promptText += (this.promptText ? '\n\n' : '') + template;
+    }
+  }
+});
+</script>
+
+<script>document.write(footerTemplate);</script>
+
