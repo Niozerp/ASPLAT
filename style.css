@@ -100,3 +100,127 @@ textarea {
   color: #fff;
   background-color: #343a40;
 }
+
+/* Color wheel page */
+#color-wheel-app .card {
+  background-color: rgba(33, 37, 41, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f8f9fa;
+}
+
+#color-wheel-app .card .text-body-secondary {
+  color: rgba(248, 249, 250, 0.65) !important;
+}
+
+#color-wheel-app .swatch-panel {
+  background: rgba(33, 37, 41, 0.6);
+}
+
+#color-wheel-app .swatch-chip {
+  min-height: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 1.25rem;
+}
+
+#color-wheel-app .swatch-header {
+  background: rgba(33, 37, 41, 0.75) !important;
+}
+
+.legend-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  display: inline-block;
+}
+
+.legend-dot.hollow {
+  background: transparent !important;
+}
+
+.color-wheel {
+  --color-wheel-size: 22rem;
+  position: relative;
+  width: var(--color-wheel-size);
+  height: var(--color-wheel-size);
+  max-width: 100%;
+  border-radius: 50%;
+  outline: none;
+}
+
+.color-wheel-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #ff0000,
+    #ffff00,
+    #00ff00,
+    #00ffff,
+    #0000ff,
+    #ff00ff,
+    #ff0000
+  );
+}
+
+.color-wheel-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--color-wheel-size) * 0.58);
+  height: calc(var(--color-wheel-size) * 0.58);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(33, 37, 41, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.wheel-marker {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  transform: translate(-50%, -50%);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.wheel-marker.hollow {
+  background: transparent;
+  box-shadow: none;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.suggestion-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(33, 37, 41, 0.5);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.suggestion-row .chip {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0d6efd;
+}
+
+@media (max-width: 576px) {
+  .color-wheel {
+    --color-wheel-size: min(18rem, 80vw);
+  }
+}

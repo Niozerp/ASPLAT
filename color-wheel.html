@@ -1,0 +1,207 @@
+<script src="js/templates.js"></script>
+<script>document.write(headerTemplate);</script>
+
+<main class="container py-4" id="color-wheel-app">
+  <header class="mb-4">
+    <h1 class="display-6 fw-semibold mb-2">Complementary Color Wheel</h1>
+    <p class="text-body-secondary mb-0">Explore a hue on the wheel, see its perfect opposite, and grab the surrounding split-complementary matches. Adjust saturation, lightness, and the offset to fine tune your palette.</p>
+  </header>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h5">Color Controls</h2>
+          <p class="text-body-secondary small">Type a HEX value or use the picker to jump anywhere on the wheel. Use the sliders to refine hue, saturation, lightness, and the adjacent offset.</p>
+
+          <div class="row g-3 align-items-end mt-3">
+            <div class="col-sm-8">
+              <label for="hex-input" class="form-label text-body-secondary mb-1">HEX Input</label>
+              <input type="text" id="hex-input" class="form-control form-control-lg" placeholder="#3498DB" autocomplete="off">
+            </div>
+            <div class="col-sm-4 text-sm-end">
+              <label for="hex-picker" class="form-label text-body-secondary mb-1">Color Picker</label>
+              <input type="color" id="hex-picker" class="form-control form-control-color form-control-lg" title="Pick a color">
+            </div>
+          </div>
+          <div id="hex-error" class="alert alert-warning py-2 px-3 mt-3 d-none" role="alert">
+            Enter a valid hex (#RGB or #RRGGBB)
+          </div>
+
+          <div class="mt-4">
+            <div class="mb-3">
+              <label for="hue-slider" class="form-label text-body-secondary">Hue <span class="badge text-bg-secondary ms-2" id="hue-value">0°</span></label>
+              <input type="range" class="form-range" min="0" max="360" id="hue-slider">
+            </div>
+            <div class="row g-3">
+              <div class="col-12 col-sm-4">
+                <label for="sat-slider" class="form-label text-body-secondary">Saturation</label>
+                <input type="range" class="form-range" min="0" max="100" id="sat-slider">
+              </div>
+              <div class="col-12 col-sm-4">
+                <label for="lig-slider" class="form-label text-body-secondary">Lightness</label>
+                <input type="range" class="form-range" min="0" max="100" id="lig-slider">
+              </div>
+              <div class="col-12 col-sm-4">
+                <label for="offset-slider" class="form-label text-body-secondary">Adjacent Offset <span class="badge text-bg-secondary ms-1" id="offset-value">30°</span></label>
+                <input type="range" class="form-range" min="5" max="60" step="1" id="offset-slider">
+                <p class="text-body-secondary small mb-0">Controls how far the split complements sit from the exact opposite.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <h2 class="h5 mb-0">Swatches</h2>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-all>Copy All HEX</button>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-sm-6" data-swatch="base">
+              <div class="swatch-panel border rounded-3 overflow-hidden">
+                <div class="swatch-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-dark-subtle bg-body-tertiary">
+                  <span class="text-body-secondary small">Base</span>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="base">Copy</button>
+                </div>
+                <div class="swatch-chip text-center" data-swatch-chip="base">
+                  <div class="fw-semibold font-monospace" data-swatch-hex="base"></div>
+                  <div class="text-body-secondary small" data-swatch-sub="base"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" data-swatch="complement">
+              <div class="swatch-panel border rounded-3 overflow-hidden">
+                <div class="swatch-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-dark-subtle bg-body-tertiary">
+                  <span class="text-body-secondary small">Opposite</span>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="complement">Copy</button>
+                </div>
+                <div class="swatch-chip text-center" data-swatch-chip="complement">
+                  <div class="fw-semibold font-monospace" data-swatch-hex="complement"></div>
+                  <div class="text-body-secondary small" data-swatch-sub="complement"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" data-swatch="splitA">
+              <div class="swatch-panel border rounded-3 overflow-hidden">
+                <div class="swatch-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-dark-subtle bg-body-tertiary">
+                  <span class="text-body-secondary small">Adj −<span data-offset-legend></span>°</span>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="splitA">Copy</button>
+                </div>
+                <div class="swatch-chip text-center" data-swatch-chip="splitA">
+                  <div class="fw-semibold font-monospace" data-swatch-hex="splitA"></div>
+                  <div class="text-body-secondary small" data-swatch-sub="splitA"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" data-swatch="splitB">
+              <div class="swatch-panel border rounded-3 overflow-hidden">
+                <div class="swatch-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-dark-subtle bg-body-tertiary">
+                  <span class="text-body-secondary small">Adj +<span data-offset-legend></span>°</span>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="splitB">Copy</button>
+                </div>
+                <div class="swatch-chip text-center" data-swatch-chip="splitB">
+                  <div class="fw-semibold font-monospace" data-swatch-hex="splitB"></div>
+                  <div class="text-body-secondary small" data-swatch-sub="splitB"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-7">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <h2 class="h5 mb-0">Color Wheel</h2>
+            <div class="d-flex flex-wrap gap-3 small text-body-secondary">
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot" data-legend="base"></span>
+                <span>Base</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot" data-legend="complement"></span>
+                <span>Opposite</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="legend-dot hollow" data-legend="split"></span>
+                <span>Adjacents</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-body-secondary small mt-2 mb-3">Click or drag on the wheel, use the Hue slider, or press ← / → (hold Shift for ±10°) to navigate.</p>
+
+          <div class="color-wheel mx-auto" id="color-wheel" role="slider" aria-label="Hue selector" aria-valuemin="0" aria-valuemax="360" aria-valuenow="0" tabindex="0">
+            <div class="color-wheel-ring"></div>
+            <div class="color-wheel-hole"></div>
+            <div class="wheel-marker" id="marker-base" title="Base"></div>
+            <div class="wheel-marker" id="marker-opposite" title="Opposite"></div>
+            <div class="wheel-marker hollow" id="marker-split-a" title="Adjacent −"></div>
+            <div class="wheel-marker hollow" id="marker-split-b" title="Adjacent +"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column">
+          <h2 class="h5">Opposite Suggestions</h2>
+          <p class="text-body-secondary small">We preserve the current saturation and lightness, rotate the hue 180° for the perfect complement, and straddle that opposite by the offset for the split complements.</p>
+
+          <div class="suggestion-list mt-3">
+            <div class="suggestion-row" data-row="base">
+              <div class="chip" data-row-chip="base"></div>
+              <div class="flex-grow-1">
+                <div class="text-body-secondary small">Base</div>
+                <div class="fw-semibold font-monospace" data-row-hex="base"></div>
+                <div class="text-body-secondary small" data-row-desc="base"></div>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="base">Copy</button>
+            </div>
+            <div class="suggestion-row" data-row="complement">
+              <div class="chip" data-row-chip="complement"></div>
+              <div class="flex-grow-1">
+                <div class="text-body-secondary small">Opposite (Complement)</div>
+                <div class="fw-semibold font-monospace" data-row-hex="complement"></div>
+                <div class="text-body-secondary small" data-row-desc="complement"></div>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="complement">Copy</button>
+            </div>
+            <div class="suggestion-row" data-row="splitA">
+              <div class="chip" data-row-chip="splitA"></div>
+              <div class="flex-grow-1">
+                <div class="text-body-secondary small">Adjacent −<span data-offset-legend></span>°</div>
+                <div class="fw-semibold font-monospace" data-row-hex="splitA"></div>
+                <div class="text-body-secondary small" data-row-desc="splitA"></div>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="splitA">Copy</button>
+            </div>
+            <div class="suggestion-row" data-row="splitB">
+              <div class="chip" data-row-chip="splitB"></div>
+              <div class="flex-grow-1">
+                <div class="text-body-secondary small">Adjacent +<span data-offset-legend></span>°</div>
+                <div class="fw-semibold font-monospace" data-row-hex="splitB"></div>
+                <div class="text-body-secondary small" data-row-desc="splitB"></div>
+              </div>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-target="splitB">Copy</button>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-top border-dark-subtle text-body-secondary small">
+            <strong class="text-light">Pro tip:</strong> Tighten the offset for analogous accents or widen it for punchier contrasts.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/color-wheel.js"></script>
+<script>document.write(footerTemplate);</script>
