@@ -43,6 +43,9 @@ const headerTemplate = `
           <a class="nav-link" href="prompt_builder.html">Prompt Builder</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="color-wheel.html">Color Wheel</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="feature-request.html">Feature Request</a>
         </li>
       </ul>
